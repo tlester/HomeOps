@@ -1,0 +1,13 @@
+---
+- name: Set up home Meida and Automation Server
+  hosts: all
+  become: yes
+  gather_facts: True
+
+  roles:
+    - common
+    - sabnzbd
+    - plex
+    - sonarr
+    - radarr
+    - home-assistant

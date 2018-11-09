@@ -1,0 +1,19 @@
+---
+# tasks file for common
+
+- name: Download pip installer
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /tmp/get-pip.py
+
+- name: Install pip
+  command: python /tmp/get-pip.py
+
+- name: Update pip
+  pip:
+    name: pip
+    state: latest
+
+- name: Install docker python library
+  pip:
+    name: docker

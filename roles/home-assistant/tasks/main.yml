@@ -1,0 +1,19 @@
+---
+# tasks file for home-assistant
+- name: Make directory for home-assistant configs
+  file:
+    path: "{{ homeassistant_config }}"
+    state: directory
+
+- name: Start home-assistant container
+  docker_container:
+    name: home-assistant
+    image: homeassistant/home-assistant
+    volumes:
+    - "{{ homeassistant_config }}:/config"
+    - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+

@@ -1,0 +1,26 @@
+---
+# tasks file for sonarr
+
+- name: Make directory for plex home
+  file:
+    path: "{{ plex_home }}"
+    state: directory
+
+- name: Start sonarr container
+  docker_container:
+    name: sonarr
+    image: linuxserver/sonarr
+    env:
+      TZ: "America/New_York"
+      PUID: 1003
+      PGID: 1003
+    ports:
+    - 8989:8989
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - "{{ plex_home }}/.config/NzbDrone:/config"
+    - "{{ plex_home }}:/media"
+    network_mode: host
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped

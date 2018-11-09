@@ -1,0 +1,31 @@
+---
+# tasks file for radarr
+
+- name: Make directory for plex home
+  file:
+    path: "{{ plex_home }}"
+    state: directory
+
+- name: Make directory for radarr home
+  file:
+    path: "{{ radarr_home }}"
+    state: directory
+
+- name: Start radarr container
+  docker_container:
+    name: radarr
+    image: linuxserver/radarr
+    env:
+      TZ: "America/New_York"
+      PUID: 1003
+      PGID: 1003
+    ports:
+    - 7878:7878
+    volumes:
+    - "{{ radarr_home }}/config:/config"
+    - "{{ radarr_home }}/downloads:/downloads"
+    - "{{ plex_home }}:/media"
+    network_mode: host
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped

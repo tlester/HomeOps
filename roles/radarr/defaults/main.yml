@@ -1,0 +1,5 @@
+---
+# defaults file for radarr
+
+plex_home: /home/plex
+radarr_home: /home/radarr

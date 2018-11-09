@@ -1,0 +1,23 @@
+---
+# tasks file for plex
+
+- name: Make directory for plex home
+  file:
+    path: "{{ plex_home }}"
+    state: directory
+
+- name: Start plex container
+  docker_container:
+    name: plex
+    image: plexinc/pms-docker
+    env:
+      TZ: "America/New_York"
+      PLEX_CLAIM: "CLAIM-QRDSWCHWSDSVV9RJRPYY" 
+    volumes:
+    - "{{ plex_home }}/database:/config"
+    - "{{ plex_home }}/transcode/temp:/transcode"
+    - "{{ plex_home }}:/data"
+    network_mode: host
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped

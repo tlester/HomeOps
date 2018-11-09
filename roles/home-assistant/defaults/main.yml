@@ -1,0 +1,4 @@
+---
+# defaults file for home-assistant
+
+homeassistant_config: /opt/homeassistant

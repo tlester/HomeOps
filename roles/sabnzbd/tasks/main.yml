@@ -1,0 +1,27 @@
+---
+# tasks file for sabnzbd
+
+- name: Make directory for plex home
+  file:
+    path: "{{ plex_home }}"
+    state: directory
+
+- name: Start sabnzbd container
+  docker_container:
+    name: sabnzbd
+    image: sabnzbd/sabnzbd
+    env:
+      CONFIG: /media/.sabnzbd/sabnzbd.ini
+      TZ: "America/New_York"
+      SABNZBD_UID: 1003
+      SABNZBD_GID: 1003
+      PGID: 1003
+      PUID: 1003
+    ports:
+    - 8080:8080
+    volumes:
+    - "{{ plex_home }}:/media"
+    network_mode: host
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
