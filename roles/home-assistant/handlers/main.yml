@@ -1,2 +1,6 @@
 ---
 # handlers file for home-assistant
+- name: restart docker
+  service:
+    name: docker
+    state: restarted

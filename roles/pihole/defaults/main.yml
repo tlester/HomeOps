@@ -1,0 +1,5 @@
+---
+# defaults file for pihole
+
+pihole_home: /opt/pihole
+dnsmasqd_home: /opt/dnsmasq.d

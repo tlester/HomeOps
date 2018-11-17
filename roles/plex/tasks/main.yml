@@ -1,5 +1,14 @@
 ---
 # tasks file for plex
+- name: Make sure docker is installed
+  apt:
+    name: docker
+    state: latest
+  notify: restart docker    
+  
+- name: Install docker python library
+  pip:
+    name: docker
 
 - name: Make directory for plex home
   file:

@@ -1,0 +1,44 @@
+---
+# tasks file for pihole
+- name: Stop and disable systemd-resolved
+  service:
+    name: systemd-resolved
+    enabled: no
+    state: stopped
+
+- name: Make sure docker is installed
+  apt:
+    name: docker
+    state: latest
+  notify: restart docker
+
+- name: Install docker python library
+  pip:
+    name: docker
+    
+- name: Make directory for pihole home
+  file:
+    path: "{{ pihole_home }}"
+    state: directory
+
+- name: Start pihole container
+  docker_container:
+    name: pihole
+    image: pihole/pihole:latest
+    env:
+      TZ: "America/New_York"
+      ServerIP: "{{ ansible_default_ipv4.address }}"
+    ports:
+    - 53:53/tcp
+    - 53:53/udp
+    - 67:67/udp
+    - 80:80
+    - 443:443
+    volumes:
+    - "{{ pihole_home }}/etc/pihole"
+    - "{{ dnsmasqd_home }}:/etc/dnsmasq.d/"
+    network_mode: host
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    # state: absent 

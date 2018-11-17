@@ -1,5 +1,5 @@
 ---
-# handlers file for sabnzbd
+# handlers file for pihole
 - name: restart docker
   service:
     name: docker

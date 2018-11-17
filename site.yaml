@@ -1,11 +1,20 @@
 ---
-- name: Set up home Meida and Automation Server
+- name: Set up common tasks on all servers
   hosts: all
   become: yes
   gather_facts: True
+  
+  roles: 
+    - common
+
+- name: Set up home Meida and Automation Server
+  hosts: automation
+  become: yes
+  gather_facts: True
+  tags: automation
 
   roles:
-    - common
+    - pihole
     - sabnzbd
     - plex
     - sonarr

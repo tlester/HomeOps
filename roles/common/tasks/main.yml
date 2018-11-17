@@ -1,6 +1,10 @@
 ---
 # tasks file for common
 
+- name: Define hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
 - name: Download pip installer
   get_url:
     url: https://bootstrap.pypa.io/get-pip.py
@@ -14,6 +18,8 @@
     name: pip
     state: latest
 
-- name: Install docker python library
-  pip:
-    name: docker
+- name: Make sure vim is present
+  apt:
+    name: vim
+    state: present
+  

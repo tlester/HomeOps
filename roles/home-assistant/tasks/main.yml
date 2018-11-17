@@ -1,9 +1,32 @@
 ---
 # tasks file for home-assistant
+- name: Make sure docker is present
+  apt:
+    name: docker
+    state: latest
+  notify: restart docker
+
+- name: Add pre-req's for home-assistant
+  apt:
+    name:
+    - libgmp-dev 
+    - libmpfr-dev
+    - libmpc-dev
+    state: present
+
+- name: Install docker python library
+  pip:
+    name: docker
+
 - name: Make directory for home-assistant configs
   file:
     path: "{{ homeassistant_config }}"
     state: directory
+
+- name: copy home-assistant configs into config directory
+  copy:
+    src: "{{ role_path }}/files/"
+    dest: /opt/homeassistant/
 
 - name: Start home-assistant container
   docker_container:

@@ -1,2 +1,6 @@
 ---
 # handlers file for plex
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
