@@ -1,8 +1,6 @@
 ---
-# defaults file for pihole
+# defaults file for proxy
 
-pihole_home: /opt/pihole
-dnsmasqd_home: /opt/dnsmasq.d
 iptables_config_base: /etc/iptables
 iptables_config: /etc/iptables/rules.v4
 ip6tables_config: /etc/iptables/rules.v6

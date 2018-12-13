@@ -1,0 +1,8 @@
+---
+# handlers file for proxy
+
+- name: save iptables ipv4
+  shell: /sbin/iptables-save > {{ iptables_config }}
+
+- name: save iptables ipv6
+  shell: /sbin/ip6tables-save > {{ ip6tables_config }}

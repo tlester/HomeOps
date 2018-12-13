@@ -2,19 +2,19 @@ homeassistant:
   # Name of the location where Home Assistant is running
   name: Home
   # Location required to calculate the time the sun rises and sets
-  latitude: 0
-  longitude: 0
+  latitude: 30.105399
+  longitude: -81.565513
   # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 0
+  elevation: 5
   # metric for Metric, imperial for Imperial
-  unit_system: metric
+  unit_system: imperial
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: UTC
+  time_zone: America/New_York
   # Customization file
   customize: !include customize.yaml
 
 # Show links to resources in log and frontend
-introduction:
+# introduction:
 
 # Enables the frontend
 frontend:
@@ -23,8 +23,10 @@ frontend:
 config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-# http:
-#   base_url: example.duckdns.org:8123
+http:
+  base_url: http://lester001:8123
+  api_password: !secret http_password
+  # api_password: test
 
 # Checks for available updates
 # Note: This component will send some information about your system to
@@ -37,6 +39,47 @@ updater:
 
 # Discover some devices automatically
 discovery:
+  enable:
+    - homekit
+
+homekit:
+  auto_start: false
+  filter:
+    # include_domains:
+      # - alarm_control_panel
+      # - light
+    include_entities:
+      - switch.idev0004
+    exclude_domains:
+      - sensor
+      - automation
+      - binary_sensor
+      - group
+      - scene
+    exclude_entities:
+      # HUE Rooms
+      - light.family_room
+      - light.living_room
+      - light.master_bedroom
+      # Rachio 
+      - binary_sensor.rachio_online
+      - switch.rachio_in_standby_mode
+      - switch.back_shrubs_east
+      - switch.back_yard
+      - switch.front_shrubs_west
+      - switch.front_yard
+
+# scene:
+#   - name: Relax in bed
+#     entities:
+#       light.light.master_bedroom_1:
+#         state: on
+#       light.master_bedroom__2:
+#         state: on
+#       light.master_dresser_lamp:
+#         state: off
+#       light.master_floor_lamp:
+#         state: off
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -56,7 +99,22 @@ sun:
 # Sensors
 sensor:
   # Weather prediction
-  - platform: yr
+#  - platform: yr
+  - platform: darksky
+    api_key: 6772f2d7247f6ea4fdbcdf51341d44f0
+    monitored_conditions:
+      - summary
+      - temperature
+      - uv_index
+  - platform: speedtest
+    minute:
+      - 0
+      - 30
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+
 
 # Text to speech
 tts:
@@ -64,7 +122,79 @@ tts:
 
 # Cloud
 cloud:
+  alexa:
+    filter:
+      include_entities:
+        - switch.idev0004
+        - input_boolean.tom_present
+        - input_boolean.melissa_present
+      exclude_domains:
+        - sensor
+        - automation
+        - binary_sensor
+      exclude_entities:
+        # HUE Rooms
+        - light.family_room
+        - light.living_room
+        - light.master_bedroom
+        # Rachio 
+        - binary_sensor.rachio_online
+        - switch.rachio_in_standby_mode
+        - switch.back_shrubs_east
+        - switch.back_yard
+        - switch.front_shrubs_west
+        - switch.front_yard
+        # Sonos 
+        - media_player.family_room
+        - media_player.garden
+
+# Weather
+weather:
+  - platform: darksky
+    api_key: 6772f2d7247f6ea4fdbcdf51341d44f0
+
+# Switches for presense tracking
+input_boolean:
+  tom_presence:
+    name: tom
+    icon: mdi:account
+  melissa_presence:
+    name: melissa
+    icon: mdi:account
+
+binary_sensor:
+  - platform: template
+    sensors:
+      presence_tom:
+        friendly_name: "Tom Presence"
+        device_class: presence
+        value_template: >-
+          {{ is_state('input_boolean.tom_presence', 'on') }}  
+  - platform: template
+    sensors:
+      presence_melissa:
+        friendly_name: "Melissa Presence"
+        device_class: presence
+        value_template: >-
+          {{ is_state('input_boolean.melissa_presence', 'on') }}  
+  # Ping Google
+  - platform: ping
+    host: google.com
+    scan_interval: 60
+    name: internet
+
+# Sonos
+sonos:
+  media_player:
+    hosts:
+      - 10.0.0.15
+      - 10.0.0.18
+
+# Rachio
+rachio:
+  api_key: cd851af6-4deb-4750-9cdd-d44faed514e6
 
 group: !include groups.yaml
+scene: !include scenes.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml

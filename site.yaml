@@ -1,4 +1,16 @@
 ---
+- name: Make sure pihole is set up first
+  hosts: automation
+  become: yes
+  gather_facts: True
+  tags: automation
+  pre_tasks:
+  - name: get secrets
+    include_vars: secrets.yaml
+ 
+  roles:
+    - pihole
+
 - name: Set up common tasks on all servers
   hosts: all
   become: yes
@@ -7,16 +19,36 @@
   roles: 
     - common
 
-- name: Set up home Meida and Automation Server
+- name: Configure proxy
+  hosts: proxy
+  become: yes
+  tags: proxy
+
+  roles:
+    - proxy
+
+
+- name: Set up home media
   hosts: automation
   become: yes
   gather_facts: True
   tags: automation
-
+ 
   roles:
-    - pihole
     - sabnzbd
     - plex
     - sonarr
     - radarr
+
+- name: Set up home automation
+  hosts: automation
+  become: yes
+  gather_facts: True
+
+  tags:
+  - automation
+  - hass
+  - hass_config
+
+  roles:
     - home-assistant

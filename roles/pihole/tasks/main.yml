@@ -1,10 +1,81 @@
 ---
 # tasks file for pihole
+- name: Add firewall init script for network
+  template:
+    src: iptables.j2
+    dest: /etc/network/if-up.d/iptables
+    mode: 0750
+
+- name: Make directory for iptables config
+  file:
+    path: "{{ iptables_config_base }}"
+    state: directory
+
+- name: Add iptables rule for ipv4 443 tcp-reset
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 443
+    jump: REJECT
+    reject_with: tcp-reset
+    ip_version: ipv4
+  notify: save iptables ipv4
+
+- name: Add iptables rule for ipv4 udp 80 icmp-port-unreachable
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: 80
+    jump: REJECT
+    reject_with: icmp-port-unreachable
+    ip_version: ipv4
+  notify: save iptables ipv4
+
+- name: Add iptables rule for ipv4 udp 443 icmp-port-unreachable
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: 443
+    jump: REJECT
+    reject_with: icmp-port-unreachable
+    ip_version: ipv4
+  notify: save iptables ipv4
+
+- name: Add iptables rule for ipv6 443 tcp-reset
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 443
+    jump: REJECT
+    reject_with: tcp-reset
+    ip_version: ipv6
+  notify: save iptables ipv6
+
+- name: Add iptables rule for ipv6 udp 80 icmp6-port-unreachable
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: 80
+    jump: REJECT
+    reject_with: icmp6-port-unreachable
+    ip_version: ipv6
+  notify: save iptables ipv6
+
+- name: Add iptables rule for ipv6 udp 443 icmp6-port-unreachable
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: 443
+    jump: REJECT
+    reject_with: icmp6-port-unreachable
+    ip_version: ipv6
+  notify: save iptables ipv6
+
 - name: Stop and disable systemd-resolved
   service:
     name: systemd-resolved
-    enabled: no
-    state: stopped
+    enabled: yes
+    state: started
 
 - name: Make sure docker is installed
   apt:
@@ -15,11 +86,27 @@
 - name: Install docker python library
   pip:
     name: docker
+
+- name: pull pi-hole
+  docker_image:
+    name: pihole/pihole:latest
     
 - name: Make directory for pihole home
   file:
     path: "{{ pihole_home }}"
     state: directory
+
+- name: Stop and disable systemd-resolved
+  service:
+    name: systemd-resolved
+    enabled: no
+    state: stopped
+
+- name: Stop and disable bind9
+  service:
+    name: bind9
+    enabled: no
+    state: stopped
 
 - name: Start pihole container
   docker_container:
@@ -28,17 +115,29 @@
     env:
       TZ: "America/New_York"
       ServerIP: "{{ ansible_default_ipv4.address }}"
+    #   ServerIPv6: "{{ ansible_default_ipv6.address }}"
+      WEBPASSWORD: "{{ pihole_password }}"
+      DNSMASQ_LISTENING: local
+      PIHOLE_DNS_3: 10.0.0.1
+    exposed_ports:
+    - 443/tcp
+    - 53/tcp
+    - 53/udp
+    - 67/udp
     ports:
     - 53:53/tcp
     - 53:53/udp
     - 67:67/udp
     - 80:80
     - 443:443
-    volumes:
-    - "{{ pihole_home }}/etc/pihole"
-    - "{{ dnsmasqd_home }}:/etc/dnsmasq.d/"
+    dns_servers:
+    - 127.0.0.1
+    - 8.8.8.8 
+    capabilities:
+    - NET_ADMIN
     network_mode: host
-    pull: yes
+    volumes:
+    - "{{ pihole_home }}:/etc/pihole"
+    - "{{ dnsmasqd_home }}:/etc/dnsmasq.d/"
     restart: yes
     restart_policy: unless-stopped
-    # state: absent 

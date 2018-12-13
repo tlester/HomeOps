@@ -1,0 +1,21 @@
+Family Room Fan:
+  - light.family_room_fan_1
+  - light.family_room_fan_2
+  - light.family_room_fan_3
+   
+Family Room:
+  - light.family_room_fireplace
+  - light.family_room_floor_lamp
+  - group.family_room_fan
+
+Living Room:
+  - light.living_room_floor_lamp
+
+Master Bedroom:
+  - light.master_bedroom_1
+  - light.master_bedroom__2
+  - light.master_bedroom_dresser_lamp
+  - light.master_bedroom_floor_lamp
+
+Back Yard:
+  - switch.idev0004

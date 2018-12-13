@@ -1,0 +1,8 @@
+- name: Relax in bed
+  entities:
+    light.master_bedroom_1:
+      state: on
+      brightness: 158
+    light.master_bedroom__2:
+      state: on
+      brightness: 158
