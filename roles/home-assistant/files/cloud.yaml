@@ -1,0 +1,112 @@
+google_actions:
+  filter:
+    exclude_domains:
+      - sensor
+      - automation
+      - binary_sensor
+      - group
+    exclude_entities:
+      # HUE Rooms
+      - light.family_room
+      - light.living_room
+      - light.master_bedroom
+      # Rachio 
+      - binary_sensor.rachio_online
+      - switch.rachio_in_standby_mode
+      - switch.back_shrubs_east
+      - switch.back_yard
+      - switch.front_shrubs_west
+      - switch.front_yard
+      # Sonos 
+      - media_player.family_room
+      - media_player.garden
+  entity_config:
+    light.family_room_fan_1:
+      name: Family Room Fan 1 
+      room: family room
+      aliases:
+        - family room fan
+    light.family_room_fan_2:
+      name: Family Room Fan 2
+      room: family room
+      aliases:
+        - family room fan
+    light.family_room_fan_3:
+      name: Family Room Fan 3
+      room: family room
+      aliases:
+        - family room fan
+    light.family_room_fireplace:
+      name: fireplace
+      room: family room
+    light.family_room_floor_lamp:
+      name: family room floor lamp
+      room: family room
+    light.living_room_floor_lamp:
+      name: living room floor lamp
+      room: living room
+    light.master_bedroom_1:
+      name: master bedroom 1
+      room: master bedroom
+      aliases:
+        - master bead
+        - sconces
+    light.master_bedroom_2:
+      name: master bedroom 2
+      room: master bedroom
+      aliases:
+        - master bead
+        - sconces
+    light.master_bedroom_dresser_lamp:
+      name: master bedroom dresser lamp
+      room: master bedroom
+    light.master_bedroom_dresser_floor_lamp:
+      name: master bedroom floor lamp
+      room: master bedroom
+    media_player.family_room:
+      name: Sonos One Family Room
+      room: family room
+    media_player.office:
+      name: Sonos One Office
+      room: office
+    switch.alcove_left:
+      name: alcove left
+      room: family room
+    switch.alcove_right:
+      name: alcove right
+      room: family room
+    switch.christmas_tree:
+      name: christas tree
+      room: living room
+    switch.outdoor_switch_00550934:
+      name: String Lights
+      room: back yard
+      aliases:
+        - garden
+
+
+alexa:
+  filter:
+    include_entities:
+      - switch.outdoor_switch_00550934
+      - input_boolean.tom_present
+      - input_boolean.melissa_present
+    exclude_domains:
+      - sensor
+      - automation
+      - binary_sensor
+    exclude_entities:
+      # HUE Rooms
+      - light.family_room
+      - light.living_room
+      - light.master_bedroom
+      # Rachio 
+      - binary_sensor.rachio_online
+      - switch.rachio_in_standby_mode
+      - switch.back_shrubs_east
+      - switch.back_yard
+      - switch.front_shrubs_west
+      - switch.front_yard
+      # Sonos 
+      - media_player.family_room
+      - media_player.garden

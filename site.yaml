@@ -52,3 +52,24 @@
 
   roles:
     - home-assistant
+
+- name: Set up jenkins
+  hosts: automation
+  become: yes
+  gather_facts: True
+
+  tags:
+  - jenkins
+
+  tasks:
+  - name: Start jenkins container
+    docker_container:
+      name: jenkins
+      image: jenkins/jenkins:lts
+      volumes:
+      - jenkins_home:/var/jenkins_home
+      network_mode: host
+      pull: yes
+      restart: yes
+      restart_policy: unless-stopped
+

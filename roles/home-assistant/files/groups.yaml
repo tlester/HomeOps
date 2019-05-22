@@ -13,9 +13,16 @@ Living Room:
 
 Master Bedroom:
   - light.master_bedroom_1
-  - light.master_bedroom__2
+  - light.master_bedroom_2
   - light.master_bedroom_dresser_lamp
   - light.master_bedroom_floor_lamp
 
 Back Yard:
-  - switch.idev0004
+  - switch.outdoor_switch_00550934
+
+Sprinklers:
+  - switch.back_yard
+  - switch.front_yard
+  - switch.back_shrubs_east
+  - switch.front_shrubs_west
+  - switch.rachio_in_standby_mode

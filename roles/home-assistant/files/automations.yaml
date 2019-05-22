@@ -1,7 +1,40 @@
-- alias: 'Start HomeKit'
+- id: 'start_homekit'
+  alias: 'Start HomeKit'
   trigger:
-    - platform: homeassistant
-      event: start
+  - platform: homeassistant
+    event: start
   action:
-    - delay: 00:02  # Waits 5 minutes
-    - service: homekit.start
+  - delay: 00:03  # Waits 3 minutes
+  - service: homekit.start
+
+- id: 'start_string_lights_at_sunset'
+  alias: 'Start String Lights at Sunset'
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+  action:
+  - service: switch.turn_on
+    entity_id: switch.outdoor_switch_00550934
+  
+- id: 'turn_on_lights_on_arrival'
+  alias: 'Turn on Lights on Arrival'
+  trigger: 
+    platform: state
+    entity_id:
+      -  binary_sensor.presence_rachel
+      -  binary_sensor.presence_melissa
+      -  binary_sensor.presence_tom
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: sun
+    after: sunset
+    after_offset: -00:30:00
+  action:
+    service: light.turn_on
+    entity_id:
+      - light.living_room_floor_lamp
+      - light.family_room_fireplace
+  
+
